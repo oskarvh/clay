@@ -27,8 +27,8 @@
 #include "../../clay.h"
 
 // EVE include, requires submodule from https://github.com/RudolphRiedel/FT800-FT813
-#include "../../examples/ft81x/FT800-FT813/src/EVE_commands.h"
-#include "../../examples/ft81x/FT800-FT813/src/EVE_commands.h"
+#include "../../examples/ft81x/FT800-FT813/EVE.h"
+#include "../../examples/ft81x/FT800-FT813/EVE_commands.h"
 
 /**
  * @brief Starts the display list, clear local buffers and clears color buffers
@@ -52,13 +52,16 @@ void endDisplayList(void) {
 }
 
 /**
- * @brief Initialize the ft81x.
+ * @brief Program the font library
+ */
+void programFontLibrary(void){
+
+}
+
+/**
+ * @brief Initialize the ft81x and clay lib
  */
 void Clay_ft81x_Initialize(){
-    if (!initSpi()) {
-        // Something went wrong with initializing offboard SPI.
-        while (1);
-    }
     EVE_init_spi();
     EVE_init();
     while (EVE_busy());

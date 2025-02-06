@@ -1,3 +1,6 @@
 [submodule "examples/ft81x/pico-sdk"]
 	path = examples/ft81x/pico-sdk
 	url = git@github.com:raspberrypi/pico-sdk.git
+[submodule "examples/ft81x/FT800-FT813"]
+	path = examples/ft81x/FT800-FT813
+	url = git@github.com:oskarvh/FT800-FT813.git
