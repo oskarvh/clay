@@ -16,7 +16,8 @@ option(CLAY_INCLUDE_FT81X_EXAMPLES "Build FT81X examples" ON)
 
 if(CLAY_INCLUDE_FT81X_EXAMPLES)
     # Note: The FT81X examples should be statically compiled since 
-    # it's running on a microcontroller
+    # it's running on a microcontroller. 
+    # This needs to be done before the project() call
     set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
     set(PICO_SDK_PATH ${CMAKE_SOURCE_DIR}/examples/ft81x/pico-sdk)
     include(examples/ft81x/pico_sdk_import.cmake)
