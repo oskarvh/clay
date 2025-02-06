@@ -1,8 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
 
-# Pull in SDK (must be before project)
-#include(pico_sdk_import.cmake)
-
 project(clay-ft81x-demo C CXX ASM)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
@@ -30,6 +27,7 @@ target_link_libraries(
     clay-ft81x-demo 
     PUBLIC
     pico_stdlib
+    hardware_spi
 )
 
 # Enable extra build products

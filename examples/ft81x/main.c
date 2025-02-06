@@ -22,6 +22,10 @@
 //
 // SPDX-License-Identifier: Zlib
 
+#define CLAY_IMPLEMENTATION
+#include "../../clay.h"
+#include "../../renderers/ft81x/clay_renderer_ft81x.c"
+
 // Standard C libraries
 #include <stdio.h>
 
