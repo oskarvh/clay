@@ -1,14 +1,25 @@
 cmake_minimum_required(VERSION 3.27)
-project(clay)
+
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-option(CLAY_INCLUDE_ALL_EXAMPLES "Build all examples" ON)
+option(CLAY_INCLUDE_ALL_EXAMPLES "Build all examples" OFF)
 option(CLAY_INCLUDE_DEMOS "Build video demo and website" OFF)
 option(CLAY_INCLUDE_CPP_EXAMPLE "Build C++ example" OFF)
 option(CLAY_INCLUDE_RAYLIB_EXAMPLES "Build raylib examples" OFF)
 option(CLAY_INCLUDE_SDL2_EXAMPLES "Build SDL 2 examples" OFF)
 option(CLAY_INCLUDE_SDL3_EXAMPLES "Build SDL 3 examples" OFF)
+option(CLAY_INCLUDE_FT81X_EXAMPLES "Build FT81X examples" ON)
+
+if(CLAY_INCLUDE_FT81X_EXAMPLES)
+    # Note: The FT81X examples should be statically compiled since 
+    # it's running on a microcontroller
+    set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
+    set(PICO_SDK_PATH ${CMAKE_SOURCE_DIR}/examples/ft81x/pico-sdk)
+    include(examples/ft81x/pico_sdk_import.cmake)
+endif()
+
+project(clay)
 
 message(STATUS "CLAY_INCLUDE_DEMOS: ${CLAY_INCLUDE_DEMOS}")
 
@@ -35,6 +46,10 @@ if(CLAY_INCLUDE_ALL_EXAMPLES OR CLAY_INCLUDE_SDL2_EXAMPLES)
 endif ()
 if(NOT MSVC AND (CLAY_INCLUDE_ALL_EXAMPLES OR CLAY_INCLUDE_SDL3_EXAMPLES))
     add_subdirectory("examples/SDL3-simple-demo")
+endif()
+if(CLAY_INCLUDE_FT81X_EXAMPLES)
+    # Do not include this per default, as it requires another compiler
+    add_subdirectory("examples/ft81x")
 endif()
 
 #  add_subdirectory("examples/cairo-pdf-rendering") Some issue with github actions populating cairo, disable for now

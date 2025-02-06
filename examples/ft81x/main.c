@@ -22,13 +22,14 @@
 //
 // SPDX-License-Identifier: Zlib
 
+// Standard C libraries
+#include <stdio.h>
 
-// RP2040
-#if defined(RP2040)
-#include "rp2040_utils.h"
-#endif
+// RP2040 pico-sdk
+#include "pico/stdlib.h"
+
 
 int main() {
     // Init MCU hardware
-    mcuInit();
+    stdio_init_all();
 }

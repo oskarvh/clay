@@ -7,6 +7,8 @@ Testing is done on a Rapsberry Pi RP2040, with the attached example.
 - CMake version 3.27.7 or newer
 - [FT800-FT813 library](https://github.com/RudolphRiedel/FT800-FT813) (included as a submodule)
 - [RP2040 Pico-SDK library](https://github.com/raspberrypi/pico-sdk) (included as a submodule)
+- arm-none-eabi-gcc (Arm GNU Toolchain 13.3.Rel1 (Build arm-13.24)) 13.3.1 20240614
+
 
 ## Setup
 TODO: Include a pinout guide for the RP2040 and the FT81x development board.
