@@ -1016,8 +1016,8 @@ typedef struct                                      \
 CLAY__ARRAY_DEFINE_FUNCTIONS(typeName, arrayName)   \
 
 Clay_Context *Clay__currentContext;
-int32_t Clay__defaultMaxElementCount = 8192;
-int32_t Clay__defaultMaxMeasureTextWordCacheCount = 16384;
+int32_t Clay__defaultMaxElementCount = 8192/100;
+int32_t Clay__defaultMaxMeasureTextWordCacheCount = 16384/100;
 
 void Clay__ErrorHandlerFunctionDefault(Clay_ErrorData errorText) {
     (void) errorText;
