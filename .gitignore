@@ -5,3 +5,5 @@ cmake-build-release/
 node_modules/
 *.dSYM
 .vs/
+.vscode/
+build/
