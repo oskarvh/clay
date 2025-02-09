@@ -247,7 +247,7 @@ const uint8_t Cascadia_20_L2 [6484] =
 
 font_t font_Cascadia_20_L2 = {
     .rom_font = false,
-    .ft81x_font_index = 0, // NOTE: This needs to be added
+    .ft81x_font_index = 0, // NOTE: This needs to be added when programming.
     .font_name = "Cascadia\0",
     .font_format = 2,
     .font_size = 20,

@@ -57,7 +57,9 @@ void SidebarItemComponent() {
 int main() {
     // Init MCU hardware
     stdio_init_all();
-
+    // Set the maximum number of elements that can be created
+    // This is a lot less than the default, but should be enough for most embedded systems
+    Clay_SetMaxElementCount(50);
     // Initialize the FT81x and SPI
     Clay_ft81x_Initialize();
 
@@ -66,6 +68,7 @@ int main() {
 
     Clay_Initialize(arena, (Clay_Dimensions) { EVE_HSIZE, EVE_VSIZE }, (Clay_ErrorHandler) { HandleClayErrors });
     Clay_SetMeasureTextFunction(ft81x_MeasureText, 0);
+    
     while(1) { // Will be different for each renderer / environment
         // Optional: Update internal layout dimensions to support resizing
         Clay_SetLayoutDimensions((Clay_Dimensions) { EVE_HSIZE, EVE_VSIZE });
@@ -80,24 +83,25 @@ int main() {
         // An example of laying out a UI with a fixed width sidebar and flexible width main content
         CLAY(CLAY_ID("OuterContainer"), CLAY_LAYOUT({ .sizing = {CLAY_SIZING_GROW(0), CLAY_SIZING_GROW(0)}, .padding = CLAY_PADDING_ALL(16), .childGap = 16 }), CLAY_RECTANGLE({ .color = {250,250,255,255} })) {
             CLAY(CLAY_ID("SideBar"),
-                 CLAY_LAYOUT({ .layoutDirection = CLAY_TOP_TO_BOTTOM, .sizing = { .width = CLAY_SIZING_GROW(0), .height = CLAY_SIZING_GROW(0) }, .padding = CLAY_PADDING_ALL(16), .childGap = 16 }),
+                 CLAY_LAYOUT({ .layoutDirection = CLAY_TOP_TO_BOTTOM, .sizing = { .width = CLAY_SIZING_FIXED(200), .height = CLAY_SIZING_GROW(0) }, .padding = CLAY_PADDING_ALL(16), .childGap = 16 }),
                  CLAY_RECTANGLE({ .color = COLOR_LIGHT })
             ) {
                 CLAY(CLAY_ID("ProfilePictureOuter"), CLAY_LAYOUT({ .sizing = { .width = CLAY_SIZING_GROW(0) }, .padding = CLAY_PADDING_ALL(16), .childGap = 16, .childAlignment = { .y = CLAY_ALIGN_Y_CENTER } }), CLAY_RECTANGLE({ .color = COLOR_RED })) {
                     //CLAY(CLAY_ID("ProfilePicture"), CLAY_LAYOUT({ .sizing = { .width = CLAY_SIZING_FIXED(60), .height = CLAY_SIZING_FIXED(60) }}), CLAY_IMAGE({ .imageData = &profilePicture, .sourceDimensions = {60, 60} })) {}
-                    CLAY_TEXT(CLAY_STRING("Clay - UI Library"), CLAY_TEXT_CONFIG({ .fontSize = 24, .textColor = {255, 255, 255, 255} }));
+                    CLAY_TEXT(CLAY_STRING("Clay - UI Library"), CLAY_TEXT_CONFIG({ .fontSize = 24, .textColor = {255, 255, 255, 255} , .fontId = 1}));
                 }
 
                 // Standard C code like loops etc work inside components
                 for (int i = 0; i < 2; i++) {
                     SidebarItemComponent();
                 }
-
-                CLAY(CLAY_ID("MainContent"), CLAY_LAYOUT({ .sizing = { .width = CLAY_SIZING_GROW(0), .height = CLAY_SIZING_GROW(0) }}), CLAY_RECTANGLE({ .color = COLOR_LIGHT })) {}
             }
+            CLAY(CLAY_ID("MainContent"), CLAY_LAYOUT({ .sizing = { .width = CLAY_SIZING_GROW(0), .height = CLAY_SIZING_GROW(0) }}), CLAY_RECTANGLE({ .color = COLOR_LIGHT })) {}
+            
         }
         Clay_RenderCommandArray renderCommands = Clay_EndLayout();
         Clay_ft81x_Render(renderCommands);
+        DELAY_MS(100);
     }
 
 }
