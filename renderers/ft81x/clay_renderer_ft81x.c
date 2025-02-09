@@ -31,8 +31,8 @@
 #include "../../clay.h"
 
 // EVE include, requires submodule from https://github.com/RudolphRiedel/FT800-FT813
-#include "../../examples/ft81x/FT800-FT813/EVE.h"
-#include "../../examples/ft81x/FT800-FT813/EVE_commands.h"
+#include "EVE.h"
+#include "EVE_commands.h"
 
 // Include fonts
 #include "fonts/font_library.h"
