@@ -1,8 +1,26 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(clay-ft81x-demo C CXX ASM)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+
+# Fetch the FT81x SDK
+include(FetchContent)
+set(FETCHCONTENT_QUIET FALSE)
+FetchContent_Declare(
+    ft81x-sdk
+    GIT_REPOSITORY "https://github.com/oskarvh/FT800-FT813"
+    GIT_TAG "5.x"
+    GIT_PROGRESS TRUE
+    GIT_SHALLOW TRUE
+)
+FetchContent_Populate(ft81x-sdk)
+set(FT81X_SDK_PATH ${CMAKE_BINARY_DIR}/_deps/ft81x-sdk-src/)
+
+# Let the pico SDK fetch itself
+set(PICO_SDK_FETCH_FROM_GIT TRUE)
+include(${CMAKE_SOURCE_DIR}/examples/ft81x/pico_sdk_import.cmake)
+
+project(clay-ft81x-demo C CXX ASM)
 
 if (PICO_SDK_VERSION_STRING VERSION_LESS "1.3.0")
     message(FATAL_ERROR "Raspberry Pi Pico SDK version 1.3.0 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}")
@@ -10,10 +28,8 @@ endif()
 
 add_compile_definitions(APP_NAME="clay-ft81x-demo")
 add_compile_definitions(RP2040)
-# Definiton for the FT810CB_ADAFRUIT_1680 display
+# Display definitions
 add_compile_definitions(EVE_FT810CB_ADAFRUIT_1591)
-#add_compile_definitions(__SIZE_MAX__=0xff000)
-#add_compile_definitions(PICO_DEBUG_MALLOC)
 
 # FT81x Pin mapping, done here instead of in pin mapping file to link properly
 add_compile_definitions(EVE_CS=1)
@@ -26,7 +42,6 @@ add_compile_definitions(EVE_BACKLIGHT_PWM=127)
 # Initialize the SDK
 pico_sdk_init()
 
-
 add_executable(
     clay-ft81x-demo
     main.c
@@ -34,8 +49,8 @@ add_executable(
 
 # Add FT81x/EVE display driver as a library
 add_library(FT81X STATIC 
-    ${CMAKE_SOURCE_DIR}/examples/ft81x/FT800-FT813/EVE_commands.c
-    ${CMAKE_SOURCE_DIR}/examples/ft81x//FT800-FT813/EVE_target.c
+    ${FT81X_SDK_PATH}/EVE_commands.c
+    ${FT81X_SDK_PATH}/EVE_target.c
 )
 target_link_libraries(
     FT81X 
@@ -44,8 +59,8 @@ target_link_libraries(
     hardware_spi
 )
 target_include_directories(FT81X PUBLIC 
-    ${CMAKE_SOURCE_DIR}/examples/ft81x/FT800-FT813/
-    ${CMAKE_SOURCE_DIR}/examples/ft81x/FT800-FT813/EVE_target/
+    ${FT81X_SDK_PATH}/
+    ${FT81X_SDK_PATH}/EVE_target/
 )
 # Add the font library
 add_library(FT81X_FONTS STATIC 
@@ -71,10 +86,6 @@ target_link_libraries(
 
 # Enable extra build products
 pico_add_extra_outputs(clay-ft81x-demo)
-
-# Enable/disable STDIO via USB and UART
-# pico_enable_stdio_usb(ft81x-demo  0)
-# pico_enable_stdio_uart(ft81x-demo  0)
 
 add_compile_options(-Wall
         -Wno-format          # int != int32_t as far as the compiler is concerned because gcc has int32_t as long int

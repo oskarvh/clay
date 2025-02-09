@@ -14,17 +14,10 @@ option(CLAY_INCLUDE_SOKOL_EXAMPLES "Build Sokol examples" OFF)
 option(CLAY_INCLUDE_PLAYDATE_EXAMPLES "Build Playdate examples" OFF)
 option(CLAY_INCLUDE_FT81X_EXAMPLES "Build FT81X examples" ON)
 
-if(CLAY_INCLUDE_FT81X_EXAMPLES)
-    # Note: The FT81X examples should be statically compiled since 
-    # it's running on a microcontroller. 
-    # This needs to be done before the project() call
-    set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
-    set(PICO_SDK_PATH ${CMAKE_SOURCE_DIR}/examples/ft81x/pico-sdk)
-    include(examples/ft81x/pico_sdk_import.cmake)
+if(NOT CLAY_INCLUDE_FT81X_EXAMPLES)
+  # The PI Pico SDK cannot define project before the SDK is initialized 
+  project(clay)
 endif()
-
-project(clay)
-
 message(STATUS "CLAY_INCLUDE_DEMOS: ${CLAY_INCLUDE_DEMOS}")
 
 if(APPLE)
@@ -67,7 +60,7 @@ if(WIN32)   # Build only for Win or Wine
         add_subdirectory("examples/win32_gdi")
     endif()
 if(CLAY_INCLUDE_FT81X_EXAMPLES)
-    # Do not include this per default, as it requires another compiler
+    # This is not included per default since it requires an ARM compiler
     add_subdirectory("examples/ft81x")
 endif()
 
