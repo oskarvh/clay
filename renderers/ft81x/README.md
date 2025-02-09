@@ -5,13 +5,16 @@ Testing is done on a Rapsberry Pi RP2040, with the attached example.
 
 ## Dependencies
 - CMake version 3.27.7 or newer
-- [FT800-FT813 library](https://github.com/RudolphRiedel/FT800-FT813) (included as a submodule)
-- [RP2040 Pico-SDK library](https://github.com/raspberrypi/pico-sdk) (included as a submodule)
+- [FT800-FT813 library](https://github.com/RudolphRiedel/FT800-FT813) (Fetched with CMake)
+- [RP2040 Pico-SDK library](https://github.com/raspberrypi/pico-sdk) (Fetched with CMake)
 - arm-none-eabi-gcc: Arm GNU Toolchain 13.3.Rel1 (Build arm-13.24) 13.3.1 20240614 or compatible with rp2040
 - [Raspberry Pi Pico Board](https://www.raspberrypi.com/products/raspberry-pi-pico/)
-- [VM810C50A-N](https://brtchip.com/product/vm810c50a-n/) development board, or any other FT81x device (pin mappings might differ)
+- [VM810C50A-N](https://brtchip.com/product/vm810c50a-n/) development board, or any other FT81x device
 
 ## Setup
+
+The requires SDKs (FT81X and Pico-SDK) are fetched during CMake build. 
+To active this example, enable `CLAY_INCLUDE_FT81X_EXAMPLES` in the root directory CMakeLists.txt file. 
 
 ### Physical setup
 The pin mapping between the [Raspberry Pi Pico](https://www.raspberrypi.com/products/raspberry-pi-pico/) and the [VM810C50A-N](https://brtchip.com/product/vm810c50a-n/) used in this example is shown in the table below. 
@@ -30,10 +33,45 @@ The pin mapping between the [Raspberry Pi Pico](https://www.raspberrypi.com/prod
 
 This project has been built and tested using VScode and Raspberry Pi Pico debugging, folloing [this](https://www.digikey.com/en/maker/projects/raspberry-pi-pico-and-rp2040-cc-part-1-blink-and-vs-code/7102fb8bca95452e9df6150f39ae8422) setup. 
 
+### Software
+
 The `launch.json` file is included below for convenience, but you should set up your own. 
+```json
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Pico Debug",
+            "cwd": "${workspaceRoot}",
+            "executable": "${command:cmake.launchTargetPath}",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "gdbPath" : "arm-none-eabi-gdb",
+            "device": "RP2040",
+            "configFiles": [
+                "interface/cmsis-dap.cfg",
+                "target/rp2040.cfg"
+            ],
+            "svdFile": "${workspaceRoot}/examples/ft81x/pico-sdk/hardware_regs/rp2040.svd",
+            "runToEntryPoint": "main",
+            // Work around for stopping at main on restart
+            "postRestartCommands": [
+                "break main",
+                "continue"
+            ],
+            "showDevDebugOutput": "raw"
+        }
+    ]
+}
+```
 
 ## Build
-TODO
+Activate the `CLAY_INCLUDE_FT81X_EXAMPLES` example in the root directory CMakeLists.txt file, build and download/debug to the RP2040. 
 
 ## Limitations
-I do not intend to support touch from the get-go, as this is inteded to be a part of the [ComSciCalculator](https://github.com/oskarvh/ComSciCalculator/), but it may be included in the future. 
+- Only text and rectangles are included as of now. 
+- Fonts needs to be created using a specific tool. See [this](https://github.com/oskarvh/ComSciCalculator/blob/main/utils/README.md) for an example and helper script on how to generate the font header files. 
