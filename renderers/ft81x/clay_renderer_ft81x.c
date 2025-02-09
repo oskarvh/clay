@@ -25,6 +25,7 @@
 
 // Standard libs
 #include <math.h>
+#include <string.h>
 
 // Include clay
 #include "../../clay.h"
@@ -170,7 +171,7 @@ static inline Clay_Dimensions ft81x_MeasureText(Clay_StringSlice text, Clay_Text
 	Clay_Dimensions textSize = { 0 };
 	uint16_t fontId = config->fontId;
 	font_t *pFont = pFontLibraryTable[fontId];
-	textSize.height = pFont->font_caps_height;
+	textSize.height = pFont->font_baseline;
 	for(int i = 0; i < text.length; i++) {
 		textSize.width += getFontCharWidth(pFont, text.chars[i]);
 	}
@@ -190,13 +191,6 @@ void Clay_ft81x_Render(Clay_RenderCommandArray commands){
 
 		switch(command->commandType) {
 		case CLAY_RENDER_COMMAND_TYPE_RECTANGLE: {
-            // // DEBUG
-            // EVE_color_rgb_burst(0xffffff);
-            // // Write the top line. This parts the options from the input
-            // EVE_cmd_dl_burst(DL_BEGIN | EVE_LINES);
-            // EVE_cmd_dl(VERTEX2F(0 * 16, 0 * 16));
-            // EVE_cmd_dl(VERTEX2F(272 * 16, 30 * 16));
-            // break;
 			Clay_RectangleElementConfig *config = command->config.rectangleElementConfig;
 			Clay_Color color = config->color;
 			Clay_BoundingBox bb = command->boundingBox;
@@ -205,16 +199,29 @@ void Clay_ft81x_Render(Clay_RenderCommandArray commands){
 			EVE_cmd_dl_burst(DL_BEGIN | EVE_RECTS);
 			EVE_cmd_dl(VERTEX2F(bb.x * 16, bb.y * 16));
 			EVE_cmd_dl(VERTEX2F((bb.x+bb.width) * 16, (bb.y + bb.height) * 16));
-			
-			//
-
 			break;
 		}
 		case CLAY_RENDER_COMMAND_TYPE_TEXT: {
 
 			Clay_BoundingBox bb = command->boundingBox;
 			Clay_Color color = command->config.textElementConfig->textColor;
-
+            uint16_t fontId = command->config.textElementConfig->fontId;
+            font_t *pFont = pFontLibraryTable[fontId];
+            
+            Clay_StringSlice text = command->text;
+            char *cloned = (char *)malloc(text.length + 1);
+            memcpy(cloned, text.chars, text.length);
+            cloned[text.length] = '\0';
+            EVE_color_rgb_burst(COLOR_RGB((uint8_t)roundf(color.r), (uint8_t)roundf(color.g), (uint8_t)roundf(color.b)));
+            EVE_color_a_burst((uint8_t)roundf(color.a));
+            EVE_cmd_text_burst(
+                bb.x,
+                bb.y,
+                pFont->ft81x_font_index, 
+                0, 
+                cloned
+            );
+            free(cloned);
 			break;
 		}
 		case CLAY_RENDER_COMMAND_TYPE_BORDER: {
