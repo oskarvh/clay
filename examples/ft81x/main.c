@@ -23,8 +23,8 @@
 // SPDX-License-Identifier: Zlib
 
 #define CLAY_IMPLEMENTATION
-#include "../../clay.h"
-#include "../../renderers/ft81x/clay_renderer_ft81x.c"
+#include "clay.h"
+#include "renderers/ft81x/clay_renderer_ft81x.c"
 
 // Standard C libraries
 #include <stdio.h>
@@ -45,9 +45,7 @@ void HandleClayErrors(Clay_ErrorData errorData) {
 }
 
 // Layout config is just a struct that can be declared statically, or inline
-Clay_LayoutConfig sidebarItemLayout = (Clay_LayoutConfig) {
-    .sizing = { .width = CLAY_SIZING_GROW(0), .height = CLAY_SIZING_FIXED(50) },
-};
+Clay_LayoutConfig sidebarItemLayout;
 
 // Re-useable components are just normal functions
 void SidebarItemComponent() {
@@ -57,7 +55,10 @@ void SidebarItemComponent() {
 int main() {
     // Init MCU hardware
     stdio_init_all();
-    // Set the maximum number of elements that can be created
+    // Init MCU hardware
+    sidebarItemLayout = (Clay_LayoutConfig) {
+        .sizing = { .width = CLAY_SIZING_GROW(0), .height = CLAY_SIZING_FIXED(50) },
+    };
     // This is a lot less than the default, but should be enough for most embedded systems
     Clay_SetMaxElementCount(50);
     // Initialize the FT81x and SPI

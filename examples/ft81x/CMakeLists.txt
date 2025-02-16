@@ -83,6 +83,10 @@ target_link_libraries(
     FT81X
     FT81X_FONTS
 )
+target_include_directories(clay-ft81x-demo  PUBLIC 
+    ${CMAKE_SOURCE_DIR}/renderers/ft81x/
+    ${CMAKE_SOURCE_DIR}/
+)
 
 # Enable extra build products
 pico_add_extra_outputs(clay-ft81x-demo)

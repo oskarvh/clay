@@ -28,14 +28,14 @@
 #include <string.h>
 
 // Include clay
-#include "../../clay.h"
+#include "clay.h"
 
 // EVE include, requires submodule from https://github.com/RudolphRiedel/FT800-FT813
 #include "EVE.h"
 #include "EVE_commands.h"
 
 // Include fonts
-#include "fonts/font_library.h"
+#include "font_library.h"
 
 //! Offset used when programming custom fonts into RAM_G
 static uint32_t ram_g_address_offset = 0;
