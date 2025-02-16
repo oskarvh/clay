@@ -167,7 +167,7 @@ void Clay_ft81x_Initialize(){
  * @param config Pointer to Clay config
  * @param userData No clue, but it's there
  */
-static inline Clay_Dimensions ft81x_MeasureText(Clay_StringSlice text, Clay_TextElementConfig *config, uintptr_t userData) {
+static inline Clay_Dimensions ft81x_MeasureText(Clay_StringSlice text, Clay_TextElementConfig *config, void* userData) {
 	Clay_Dimensions textSize = { 0 };
 	uint16_t fontId = config->fontId;
 	font_t *pFont = pFontLibraryTable[fontId];
@@ -191,8 +191,8 @@ void Clay_ft81x_Render(Clay_RenderCommandArray commands){
 
 		switch(command->commandType) {
 		case CLAY_RENDER_COMMAND_TYPE_RECTANGLE: {
-			Clay_RectangleElementConfig *config = command->config.rectangleElementConfig;
-			Clay_Color color = config->color;
+            Clay_RectangleRenderData *config = &command->renderData.rectangle;
+			Clay_Color color = config->backgroundColor;
 			Clay_BoundingBox bb = command->boundingBox;
             EVE_color_rgb_burst(COLOR_RGB((uint8_t)roundf(color.r), (uint8_t)roundf(color.g), (uint8_t)roundf(color.b)));
             EVE_color_a_burst((uint8_t)roundf(color.a));
@@ -202,13 +202,20 @@ void Clay_ft81x_Render(Clay_RenderCommandArray commands){
 			break;
 		}
 		case CLAY_RENDER_COMMAND_TYPE_TEXT: {
-
+            Clay_TextRenderData *textData = &command->renderData.text;
 			Clay_BoundingBox bb = command->boundingBox;
-			Clay_Color color = command->config.textElementConfig->textColor;
-            uint16_t fontId = command->config.textElementConfig->fontId;
+			Clay_Color color = textData->textColor;
+            uint16_t fontId = textData->fontId;
             font_t *pFont = pFontLibraryTable[fontId];
-            
-            Clay_StringSlice text = command->text;
+            //Clay_TextAlignment alignment = &command-> textData->textAlignment;
+            uint16_t options = 0;
+            // if(alignment == CLAY_TEXT_ALIGN_RIGHT){
+            //     options |= EVE_OPT_RIGHTX;
+            // }
+            // if(alignment == CLAY_TEXT_ALIGN_CENTER){
+            //     options |= EVE_OPT_CENTERX;
+            // }
+            Clay_StringSlice text = textData->stringContents;
             char *cloned = (char *)malloc(text.length + 1);
             memcpy(cloned, text.chars, text.length);
             cloned[text.length] = '\0';
@@ -218,14 +225,14 @@ void Clay_ft81x_Render(Clay_RenderCommandArray commands){
                 bb.x,
                 bb.y,
                 pFont->ft81x_font_index, 
-                0, 
+                options, 
                 cloned
             );
             free(cloned);
 			break;
 		}
 		case CLAY_RENDER_COMMAND_TYPE_BORDER: {
-			Clay_BorderElementConfig *config = command->config.borderElementConfig;
+            Clay_BorderRenderData *config = &command->renderData.border;
 			Clay_BoundingBox bb = command->boundingBox;
 
 			double top_left_radius = config->cornerRadius.topLeft / 2.0;
@@ -234,19 +241,19 @@ void Clay_ft81x_Render(Clay_RenderCommandArray commands){
 			double bottom_left_radius = config->cornerRadius.bottomLeft / 2.0;
 
 			// Draw the top border
-			if (config->top.width > 0) {
+			if (config->width.top > 0) {
 			}
 
 			// Draw the right border
-			if (config->right.width > 0) {
+			if (config->width.right > 0) {
 			}
 
 			// Draw the bottom border
-			if (config->bottom.width > 0) {
+			if (config->width.bottom > 0) {
 			}
 
 			// Draw the left border
-			if (config->left.width > 0) {
+			if (config->width.left > 0) {
 			}
 			break;
 		}
