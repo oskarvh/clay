@@ -44,21 +44,18 @@ void HandleClayErrors(Clay_ErrorData errorData) {
     }
 }
 
-// Layout config is just a struct that can be declared statically, or inline
-Clay_LayoutConfig sidebarItemLayout;
 
 // Re-useable components are just normal functions
 void SidebarItemComponent() {
-    CLAY(CLAY_LAYOUT(sidebarItemLayout), CLAY_RECTANGLE({ .color = COLOR_ORANGE })) {}
+    CLAY({
+        .layout = { .sizing = { .width = CLAY_SIZING_GROW(0), .height = CLAY_SIZING_FIXED(50) },}, 
+        .backgroundColor = COLOR_ORANGE })
+         {}
 }
 
 int main() {
     // Init MCU hardware
     stdio_init_all();
-    // Init MCU hardware
-    sidebarItemLayout = (Clay_LayoutConfig) {
-        .sizing = { .width = CLAY_SIZING_GROW(0), .height = CLAY_SIZING_FIXED(50) },
-    };
     // This is a lot less than the default, but should be enough for most embedded systems
     Clay_SetMaxElementCount(50);
     // Initialize the FT81x and SPI
@@ -68,7 +65,7 @@ int main() {
     Clay_Arena arena = Clay_CreateArenaWithCapacityAndMemory(totalMemorySize, malloc(totalMemorySize));
 
     Clay_Initialize(arena, (Clay_Dimensions) { EVE_HSIZE, EVE_VSIZE }, (Clay_ErrorHandler) { HandleClayErrors });
-    Clay_SetMeasureTextFunction(ft81x_MeasureText, 0);
+    Clay_SetMeasureTextFunction(ft81x_MeasureText, NULL);
     
     while(1) { // Will be different for each renderer / environment
         // Optional: Update internal layout dimensions to support resizing
@@ -81,14 +78,21 @@ int main() {
         // All clay layouts are declared between Clay_BeginLayout and Clay_EndLayout
         Clay_BeginLayout();
 
-        // An example of laying out a UI with a fixed width sidebar and flexible width main content
-        CLAY(CLAY_ID("OuterContainer"), CLAY_LAYOUT({ .sizing = {CLAY_SIZING_GROW(0), CLAY_SIZING_GROW(0)}, .padding = CLAY_PADDING_ALL(16), .childGap = 16 }), CLAY_RECTANGLE({ .color = {250,250,255,255} })) {
-            CLAY(CLAY_ID("SideBar"),
-                 CLAY_LAYOUT({ .layoutDirection = CLAY_TOP_TO_BOTTOM, .sizing = { .width = CLAY_SIZING_FIXED(200), .height = CLAY_SIZING_GROW(0) }, .padding = CLAY_PADDING_ALL(16), .childGap = 16 }),
-                 CLAY_RECTANGLE({ .color = COLOR_LIGHT })
-            ) {
-                CLAY(CLAY_ID("ProfilePictureOuter"), CLAY_LAYOUT({ .sizing = { .width = CLAY_SIZING_GROW(0) }, .padding = CLAY_PADDING_ALL(16), .childGap = 16, .childAlignment = { .y = CLAY_ALIGN_Y_CENTER } }), CLAY_RECTANGLE({ .color = COLOR_RED })) {
-                    //CLAY(CLAY_ID("ProfilePicture"), CLAY_LAYOUT({ .sizing = { .width = CLAY_SIZING_FIXED(60), .height = CLAY_SIZING_FIXED(60) }}), CLAY_IMAGE({ .imageData = &profilePicture, .sourceDimensions = {60, 60} })) {}
+        CLAY({
+            .id = CLAY_ID("OuterContainer"), 
+            .layout ={ .sizing = {CLAY_SIZING_GROW(0), CLAY_SIZING_GROW(0)}, .padding = CLAY_PADDING_ALL(16), .childGap = 16 },
+            .backgroundColor = {250,250,255,255}
+        }) {
+            CLAY({
+                .id = CLAY_ID("SideBar"),
+                .layout = { .layoutDirection = CLAY_TOP_TO_BOTTOM, .sizing = { .width = CLAY_SIZING_FIXED(200), .height = CLAY_SIZING_GROW(0) }, .padding = CLAY_PADDING_ALL(16), .childGap = 16 },
+                .backgroundColor = COLOR_LIGHT
+            }) {
+                CLAY({
+                    .id = CLAY_ID("ProfilePictureOuter"), 
+                    .layout = { .sizing = { .width = CLAY_SIZING_GROW(0) }, .padding = CLAY_PADDING_ALL(16), .childGap = 16, .childAlignment = { .y = CLAY_ALIGN_Y_CENTER } }, 
+                    .backgroundColor = COLOR_RED 
+                }) {
                     CLAY_TEXT(CLAY_STRING("Clay - UI Library"), CLAY_TEXT_CONFIG({ .fontSize = 24, .textColor = {255, 255, 255, 255} , .fontId = 1}));
                 }
 
@@ -97,8 +101,11 @@ int main() {
                     SidebarItemComponent();
                 }
             }
-            CLAY(CLAY_ID("MainContent"), CLAY_LAYOUT({ .sizing = { .width = CLAY_SIZING_GROW(0), .height = CLAY_SIZING_GROW(0) }}), CLAY_RECTANGLE({ .color = COLOR_LIGHT })) {}
-            
+            CLAY({
+                .id = CLAY_ID("MainContent"), 
+                .layout = { .sizing = { .width = CLAY_SIZING_GROW(0), .height = CLAY_SIZING_GROW(0) }}, 
+                .backgroundColor = COLOR_LIGHT 
+            }) {}
         }
         Clay_RenderCommandArray renderCommands = Clay_EndLayout();
         Clay_ft81x_Render(renderCommands);
