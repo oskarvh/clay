@@ -3,6 +3,7 @@
 #include <SDL_ttf.h>
 #include <SDL_image.h>
 #include <stdio.h>
+#include <math.h>
 
 #ifndef M_PI
     #define M_PI 3.14159
@@ -146,7 +147,7 @@ static void SDL_RenderFillRoundedRect(SDL_Renderer* renderer, const SDL_FRect re
 }
 
 //all rendering is performed by a single SDL call, using twi sets of arcing triangles, inner and outer, that fit together; along with two tringles to fill the end gaps.
-void SDL_RenderCornerBorder(SDL_Renderer *renderer, Clay_BoundingBox* boundingBox, Clay_BorderRenderData* config, int cornerIndex, Clay_Color _color){
+static void SDL_RenderCornerBorder(SDL_Renderer *renderer, Clay_BoundingBox* boundingBox, Clay_BorderRenderData* config, int cornerIndex, Clay_Color _color){
     /////////////////////////////////
     //The arc is constructed of outer triangles and inner triangles (if needed).
     //First three vertices are first outer triangle's vertices
@@ -408,7 +409,7 @@ static void Clay_SDL2_Render(SDL_Renderer *renderer, Clay_RenderCommandArray ren
                         SDL_RenderCornerBorder(renderer, &boundingBox, config, 1, config->color);
                     }
 
-                    if (config->width.bottom > 0 & config->cornerRadius.bottomLeft > 0) {
+                    if (config->width.bottom > 0 & config->cornerRadius.bottomRight > 0) {
                         SDL_RenderCornerBorder(renderer, &boundingBox, config, 2, config->color);
                     }
 
