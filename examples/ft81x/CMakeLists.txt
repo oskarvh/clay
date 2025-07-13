@@ -18,12 +18,13 @@ set(FT81X_SDK_PATH ${CMAKE_BINARY_DIR}/_deps/ft81x-sdk-src/)
 
 # Let the pico SDK fetch itself
 set(PICO_SDK_FETCH_FROM_GIT TRUE)
+set(PICO_SDK_FETCH_FROM_GIT_TAG "2.1.1")
 include(${CMAKE_SOURCE_DIR}/examples/ft81x/pico_sdk_import.cmake)
 
 project(clay-ft81x-demo C CXX ASM)
 
-if (PICO_SDK_VERSION_STRING VERSION_LESS "1.3.0")
-    message(FATAL_ERROR "Raspberry Pi Pico SDK version 1.3.0 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}")
+if (PICO_SDK_VERSION_STRING VERSION_LESS "2.1.1")
+    message(FATAL_ERROR "Raspberry Pi Pico SDK version 2.1.1 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}")
 endif()
 
 add_compile_definitions(APP_NAME="clay-ft81x-demo")

@@ -59,6 +59,7 @@ if(WIN32)   # Build only for Win or Wine
     if(CLAY_INCLUDE_ALL_EXAMPLES OR CLAY_INCLUDE_WIN32_GDI_EXAMPLES)
         add_subdirectory("examples/win32_gdi")
     endif()
+endif()
 if(CLAY_INCLUDE_FT81X_EXAMPLES)
     # This is not included per default since it requires an ARM compiler
     add_subdirectory("examples/ft81x")

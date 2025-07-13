@@ -1,5 +1,5 @@
 # FT81x Renderer for the Clay library
-The FT1x is a family of Bridgetek Embedded Video Engine (EVE) IC's. This renderer is intended to act between the Clay library and the FT81x chip, and is intended to run on an embedded system. 
+The FT81x is a family of Bridgetek Embedded Video Engine (EVE) IC's. This renderer is intended to act between the Clay library and the FT81x chip, and is intended to run on an embedded system. 
 
 Testing is done on a Rapsberry Pi RP2040, with the attached example. 
 
@@ -10,7 +10,7 @@ Testing is done on a Rapsberry Pi RP2040, with the attached example.
 - arm-none-eabi-gcc: Arm GNU Toolchain 13.3.Rel1 (Build arm-13.24) 13.3.1 20240614 or compatible with rp2040
 - [Raspberry Pi Pico Board](https://www.raspberrypi.com/products/raspberry-pi-pico/)
 - [VM810C50A-N](https://brtchip.com/product/vm810c50a-n/) development board, or any other FT81x device
-
+- [OpenOCD for RP2040](https://github.com/raspberrypi/openocd) OpenOCD for RP2040. Unfortunately, the rp2040 requires its own installation of OpenOCD. See [this guide](https://github.com/SuperChange001/pico_debug_with_swd) for installation.
 ## Setup
 
 The requires SDKs (FT81X and Pico-SDK) are fetched during CMake build. 
