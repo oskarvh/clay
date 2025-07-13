@@ -52,6 +52,7 @@ void SidebarItemComponent() {
         .backgroundColor = COLOR_ORANGE })
          {}
 }
+
 int main() {
     // Init MCU hardware
     stdio_init_all();
